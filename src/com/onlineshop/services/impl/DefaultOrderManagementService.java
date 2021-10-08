@@ -1,20 +1,18 @@
 package com.onlineshop.services.impl;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.onlineshop.enteties.Order;
 import com.onlineshop.services.OrderManagementService;
 
 public class DefaultOrderManagementService implements OrderManagementService {
 
-	private static final int DEFAULT_ORDER_CAPACITY = 10;
-
 	private static DefaultOrderManagementService instance;
-	private Order[] orders;
-	private int orderIndex = 0;
+	private List<Order> orders;
 
 	{
-		orders = new Order[DEFAULT_ORDER_CAPACITY];
+		orders = new ArrayList<>();
 	}
 
 	public static OrderManagementService getInstance() {
@@ -30,61 +28,28 @@ public class DefaultOrderManagementService implements OrderManagementService {
 			return;
 		}
 
-		// TODO: <=
-		if (orderIndex == orders.length) {
-			orders = Arrays.copyOf(orders, orders.length << 1);
-		}
-
-		orders[orderIndex++] = order;
+		orders.add(order);
 	}
 
 	@Override
-	public Order[] getOrdersByUserId(int userId) {
-		int numberOfOrders = 0;
+	public List<Order> getOrdersByUserId(int userId) {
+		List<Order> ordersByUserId = new ArrayList<>();
 
 		for (Order order : orders) {
 			if (order != null && order.getCustomerId() == userId) {
-				numberOfOrders++;
+				ordersByUserId.add(order);
 			}
 		}
-
-		Order[] ordersByUserId = new Order[numberOfOrders];
-		int index = 0;
-
-		for (Order order : orders) {
-			if (order != null && order.getCustomerId() == userId) {
-				ordersByUserId[index++] = order;
-			}
-		}
-
 		return ordersByUserId;
 	}
 
 	@Override
-	public Order[] getOrders() {
-		int nonNullOrdersAmount = 0;
-
-		for (Order order : orders) {
-			if (order != null) {
-				nonNullOrdersAmount++;
-			}
-		}
-
-		Order[] nonNullOrders = new Order[nonNullOrdersAmount];
-		int index = 0;
-
-		for (Order order : orders) {
-			if (order != null) {
-				nonNullOrders[index++] = order;
-			}
-		}
-
-		return nonNullOrders;
+	public List<Order> getOrders() {
+		return this.orders;
 	}
 
 	void clearServiceState() {
-		orders = new Order[DEFAULT_ORDER_CAPACITY];
-		orderIndex = 0;
+		orders.clear();
 	}
 
 }

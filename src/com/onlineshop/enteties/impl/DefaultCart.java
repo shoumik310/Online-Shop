@@ -1,33 +1,22 @@
 package com.onlineshop.enteties.impl;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.onlineshop.enteties.Cart;
 import com.onlineshop.enteties.Product;
 
 public class DefaultCart implements Cart {
 
-	private static final int DEFAULT_CART_CAPACITY = 10;
-	private Product[] products;
-	private int productIndex = 0;
+	private List<Product> products;
 
 	{
-		products = new Product[DEFAULT_CART_CAPACITY];
+		products = new ArrayList<>();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		if (products == null || productIndex == 0) {
-			return true;
-		}
-
-		for (Product product : products) {
-			if (product != null) {
-				return false;
-			}
-		}
-
-		return true;
+		return products.isEmpty();
 	}
 
 	@Override
@@ -35,38 +24,17 @@ public class DefaultCart implements Cart {
 		if (product == null) {
 			return;
 		}
-		//TODO: <=
-		if (productIndex == products.length) { 
-			products = Arrays.copyOf(products, products.length << 1);
-		}
-
-		products[productIndex++] = product;
+		products.add(product);
 	}
 
 	@Override
-	public Product[] getProducts() {
-
-		int nonNullProductsAmount = 0;
-		for (Product product : products) {
-			if (product != null) {
-				nonNullProductsAmount++;
-			}
-		}
-
-		Product[] nonNullProducts = new Product[nonNullProductsAmount];
-		int index = 0;
-		for (Product product : products) {
-			if (product != null) {
-				nonNullProducts[index++] = product;
-			}
-		}
-		return nonNullProducts;
+	public List<Product> getProducts() {
+		return products;
 	}
 
 	@Override
 	public void clear() {
-		products = new Product[DEFAULT_CART_CAPACITY];
-		productIndex = 0;
-	}
+		products.clear();
 
+	}
 }

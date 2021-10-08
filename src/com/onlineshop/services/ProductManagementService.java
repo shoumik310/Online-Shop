@@ -1,10 +1,11 @@
 package com.onlineshop.services;
 
+import java.util.List;
 import com.onlineshop.enteties.Product;
 
 public interface ProductManagementService {
 
-	Product[] getProducts();
+	List<Product> getProducts();
 
 	Product getProductById(int productIdToAddToCart);
 

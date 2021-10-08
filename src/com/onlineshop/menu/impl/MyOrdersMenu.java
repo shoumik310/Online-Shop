@@ -1,5 +1,7 @@
 package com.onlineshop.menu.impl;
 
+import java.util.List;
+
 import com.onlineshop.configs.ApplicationContext;
 import com.onlineshop.enteties.Order;
 import com.onlineshop.menu.Menu;
@@ -28,8 +30,8 @@ public class MyOrdersMenu implements Menu {
 	}
 
 	private void printAllUserOrders() {
-		Order[] loggedInUserOrders  = orderManagementService.getOrdersByUserId(context.getLoggedInUser().getId());
-		if (loggedInUserOrders  == null || loggedInUserOrders .length == 0) {
+		List<Order> loggedInUserOrders  = orderManagementService.getOrdersByUserId(context.getLoggedInUser().getId());
+		if (loggedInUserOrders  == null || loggedInUserOrders.isEmpty()) {
 			System.out.println("Unfortunately, you don’t have any orders yet. "
 					+ "Navigate back to main menu to place a new order");
 		} else {
