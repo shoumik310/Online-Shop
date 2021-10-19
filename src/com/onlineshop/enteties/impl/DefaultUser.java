@@ -25,6 +25,15 @@ public class DefaultUser implements User {
 		this.password = password;
 		this.email = email;
 	}
+	
+	public DefaultUser(int id, String firstName, String lastName, String password, String email) {
+		this.id = id;
+		userCounter--;  //to maintain sequential id
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.password = password;
+		this.email = email;
+	}
 
 	@Override
 	public String getFirstName() {
@@ -76,4 +85,8 @@ public class DefaultUser implements User {
 	void clearState() {
 		userCounter = 0;
 	}
+	
+	public static void setCounter(int updatedCount) {
+		userCounter = updatedCount;
+	}	
 }

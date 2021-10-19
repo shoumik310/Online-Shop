@@ -1,10 +1,11 @@
 package com.onlineshop.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.onlineshop.enteties.User;
+import com.onlineshop.enteties.impl.DefaultUser;
 import com.onlineshop.services.UserManagementService;
+import com.onlineshop.storage.impl.DefaultUserStoringService;
 
 public class DefaultUserManagementService implements UserManagementService {
 
@@ -12,14 +13,13 @@ public class DefaultUserManagementService implements UserManagementService {
 	private static final String EMPTY_EMAIL_ERROR_MESSAGE = "You have to input email to register. Please, try one more time";
 	private static final String NO_ERROR_MESSAGE = "";
 
-	private List<User> users;
-
 	private static DefaultUserManagementService instance;
-
-	{
-		users = new ArrayList<>();
+	private static DefaultUserStoringService userStoringService;
+	
+	static{
+		userStoringService = DefaultUserStoringService.getInstance();
 	}
-
+	
 	private DefaultUserManagementService() {
 	}
 
@@ -33,11 +33,12 @@ public class DefaultUserManagementService implements UserManagementService {
 			return errorMessage;
 		}
 
-		users.add(user);
+		userStoringService.saveUser(user);
 		return NO_ERROR_MESSAGE;
 	}
 
 	private String checkUniqueEmail(String email) {
+		List<User> users = userStoringService.loadUsers();
 		if (email == null || email.isEmpty()) {
 			return EMPTY_EMAIL_ERROR_MESSAGE;
 		}
@@ -60,20 +61,19 @@ public class DefaultUserManagementService implements UserManagementService {
 
 	@Override
 	public List<User> getUsers() {
-		return this.users;
+		List<User> users = userStoringService.loadUsers();
+		DefaultUser.setCounter(users.stream().mapToInt(user->user.getId()).max().getAsInt());
+		return users;
 	}
 
 	@Override
 	public User getUserByEmail(String userEmail) {
+		List<User> users = userStoringService.loadUsers();
 		for (User user : users) {
 			if (user != null && user.getEmail().equalsIgnoreCase(userEmail)) {
 				return user;
 			}
 		}
 		return null;
-	}
-
-	void clearServiceState() {
-		users.clear();
 	}
 }
