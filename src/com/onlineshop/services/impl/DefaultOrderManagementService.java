@@ -5,14 +5,20 @@ import java.util.List;
 
 import com.onlineshop.enteties.Order;
 import com.onlineshop.services.OrderManagementService;
+import com.onlineshop.storage.impl.DefaultOrderStoringService;
 
 public class DefaultOrderManagementService implements OrderManagementService {
 
 	private static DefaultOrderManagementService instance;
+	private static DefaultOrderStoringService orderStoringService;
 	private List<Order> orders;
-
+	
 	{
-		orders = new ArrayList<>();
+		orderStoringService = DefaultOrderStoringService.getInstance();
+		orders = orderStoringService.loadOrders();
+		if(orders==null) {
+			orders = new ArrayList<>();
+		}
 	}
 
 	public static OrderManagementService getInstance() {
@@ -29,6 +35,7 @@ public class DefaultOrderManagementService implements OrderManagementService {
 		}
 
 		orders.add(order);
+		orderStoringService.saveOrders(orders);
 	}
 
 	@Override
@@ -45,6 +52,9 @@ public class DefaultOrderManagementService implements OrderManagementService {
 
 	@Override
 	public List<Order> getOrders() {
+		if(orders==null || orders.size()==0) {
+			orders = orderStoringService.loadOrders();
+		}
 		return this.orders;
 	}
 
